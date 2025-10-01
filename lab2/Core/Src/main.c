@@ -56,41 +56,7 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
-
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_TIM2_Init();
-  /* USER CODE BEGIN 2 */
-  void display7SEG(int num) {
+void display7SEG(int num) {
 	  switch(num) {
 	  case 0:
 		  HAL_GPIO_WritePin(LED_7SEG_A_GPIO_Port, LED_7SEG_A_Pin,RESET);
@@ -183,18 +149,65 @@ int main(void)
 		  HAL_GPIO_WritePin(LED_7SEG_G_GPIO_Port, LED_7SEG_G_Pin,RESET);
 		  break;
 	  }
-  }
+}
 
+uint8_t led_buffer[2] = {1, 2};
+uint8_t led_index = 0;
+void update7SEG(int index){
+	  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
+	  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
 
+	  display7SEG(led_buffer[index]);
+
+	  if(index == 0) {
+		  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
+	  } else {
+		  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
+	  }
+
+}
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM2_Init();
+  /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   setTimer1(100);//timerRun call every 10ms
-  setTimer2(50);
+  //setTimer2(50);
   //setTimer3(6);
-  uint8_t led_index = 1;
+  //uint8_t led_index = 1;
 
   while (1)
   {
@@ -204,26 +217,26 @@ int main(void)
 		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
 	  }
 
-	  if(timer2_flag == 1){
-		  setTimer2(50);
-		  //TODO
-          led_index = 1 - led_index;
-		  if(led_index == 0) {
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-
-			  display7SEG(1);
-
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
-		  } else {
-			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-
-			  display7SEG(2);
-
-			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
-		  }
-	  }
+//	  if(timer2_flag == 1){
+//		  setTimer2(50);
+//		  //TODO
+//          led_index = 1 - led_index;
+//		  if(led_index == 0) {
+//			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
+//			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
+//
+//			  display7SEG(1);
+//
+//			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
+//		  } else {
+//			  HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
+//			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
+//
+//			  display7SEG(2);
+//
+//			  HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
+//		  }
+//	  }
 
     /* USER CODE END WHILE */
 
@@ -358,9 +371,15 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-int counter = 100;
+//int counter = 100;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	timerRun();
+	if(htim->Instance == TIM2) {
+		timerRun();
+
+		led_index++;
+		if(led_index >= 2) led_index = 0;
+		update7SEG(led_index);
+	}
 }
 /* USER CODE END 4 */
 
