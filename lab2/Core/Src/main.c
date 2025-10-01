@@ -234,7 +234,7 @@ int main(void)
 	  }
 
 	  if(timer2_flag == 1){
-		  setTimer2(50);
+		  setTimer2(25);
 		  //TODO
           update7SEG(index_led);
 		  index_led++;

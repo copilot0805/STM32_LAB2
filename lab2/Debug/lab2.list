@@ -569,8 +569,8 @@ int main(void)
  80004cc:	681b      	ldr	r3, [r3, #0]
  80004ce:	2b01      	cmp	r3, #1
  80004d0:	d1ec      	bne.n	80004ac <main+0x40>
-		  setTimer2(50);
- 80004d2:	2032      	movs	r0, #50	@ 0x32
+		  setTimer2(25);
+ 80004d2:	2019      	movs	r0, #25
  80004d4:	f000 f984 	bl	80007e0 <setTimer2>
 		  //TODO
           update7SEG(index_led);
