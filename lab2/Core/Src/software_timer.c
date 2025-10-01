@@ -15,6 +15,7 @@ int timer2_flag = 0;
 
 int timer3_counter = 0;
 int timer3_flag = 0;
+int TIMER_CYCLE = 10;
 
 /* setTimer */
  void setTimer1(int duration){
@@ -28,7 +29,7 @@ int timer3_flag = 0;
  }
 
  void setTimer3(int duration){
-	 timer3_counter = duration;
+	 timer3_counter = duration / TIMER_CYCLE; //lam theo de bai
 	 timer3_flag = 0;
  }
 
