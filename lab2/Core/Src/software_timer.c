@@ -29,7 +29,7 @@ int TIMER_CYCLE = 10;
  }
 
  void setTimer3(int duration){
-	 timer3_counter = duration / TIMER_CYCLE; //lam theo de bai
+	 timer3_counter = duration;
 	 timer3_flag = 0;
  }
 
