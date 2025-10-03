@@ -287,7 +287,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 15, minute = 8, second = 50;
+  int hour = 23, minute = 59, second = 55;/**/
 
   void updateClockBuffer(){
 	  if(hour < 10) {

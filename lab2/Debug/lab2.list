@@ -37,11 +37,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  000163cd  00000000  00000000  0000e637  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00009b63  00000000  00000000  00024a04  2**0
+ 17 .debug_line   00009b61  00000000  00000000  00024a04  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000824b1  00000000  00000000  0002e567  2**0
+ 18 .debug_str    000824b1  00000000  00000000  0002e565  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000b0a18  2**0
+ 19 .comment      00000043  00000000  00000000  000b0a16  2**0
                   CONTENTS, READONLY
  20 .debug_frame  00002730  00000000  00000000  000b0a5c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -604,9 +604,9 @@ Disassembly of section .text:
  8000534:	20000000 	.word	0x20000000
 
 08000538 <updateLEDMatrix>:
-      0x11, // cột 4 (00010001)
-      0x11, // cột 5 (00010001)
-      0x11, // cột 6 (00010001)
+      0x11, // col 4 (00010001)
+      0x11, // col 5 (00010001)
+      0x11, // col 6 (00010001)
       0x00  // col 7
   };
   void updateLEDMatrix(int index) {
@@ -654,10 +654,6 @@ Disassembly of section .text:
  8000592:	f44f 4100 	mov.w	r1, #32768	@ 0x8000
  8000596:	4842      	ldr	r0, [pc, #264]	@ (80006a0 <updateLEDMatrix+0x168>)
  8000598:	f000 feac 	bl	80012f4 <HAL_GPIO_WritePin>
-//	           HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_SET);
-//	       else
-//	           HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_RESET);
-//	   }
 
 	    uint8_t data = matrix_buffer[index];
  800059c:	4a41      	ldr	r2, [pc, #260]	@ (80006a4 <updateLEDMatrix+0x16c>)
@@ -849,7 +845,7 @@ Disassembly of section .text:
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 15, minute = 8, second = 50;
+  int hour = 23, minute = 59, second = 55;/**/
 
   void updateClockBuffer(){
  80006f0:	b480      	push	{r7}
@@ -966,12 +962,12 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
  80007b0:	4841      	ldr	r0, [pc, #260]	@ (80008b8 <main+0x124>)
  80007b2:	f001 f9ff 	bl	8001bb4 <HAL_TIM_Base_Start_IT>
-  int hour = 15, minute = 8, second = 50;
- 80007b6:	230f      	movs	r3, #15
+  int hour = 23, minute = 59, second = 55;/**/
+ 80007b6:	2317      	movs	r3, #23
  80007b8:	60bb      	str	r3, [r7, #8]
- 80007ba:	2308      	movs	r3, #8
+ 80007ba:	233b      	movs	r3, #59	@ 0x3b
  80007bc:	607b      	str	r3, [r7, #4]
- 80007be:	2332      	movs	r3, #50	@ 0x32
+ 80007be:	2337      	movs	r3, #55	@ 0x37
  80007c0:	617b      	str	r3, [r7, #20]
 
   setTimer1(100);
@@ -1116,7 +1112,6 @@ int main(void)
  800088c:	681b      	ldr	r3, [r3, #0]
  800088e:	2b01      	cmp	r3, #1
  8000890:	d104      	bne.n	800089c <main+0x108>
-	        // sau 1 giây giữ nguyên chữ A
 	        state = 1;
  8000892:	2301      	movs	r3, #1
  8000894:	613b      	str	r3, [r7, #16]
