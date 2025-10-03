@@ -184,14 +184,14 @@ static void MX_TIM2_Init(void);
   const int MAX_LED_MATRIX = 8;
   int index_led_matrix = 0;
   uint8_t matrix_buffer[8] = {
-      0x0E, // cột 0 (00001110)
-      0x11, // cột 1 (00010001)
-      0x11, // cột 2 (00010001)
-      0x1F, // cột 3 (00011111)
-      0x11, // cột 4 (00010001)
-      0x11, // cột 5 (00010001)
-      0x11, // cột 6 (00010001)
-      0x00  // cột 7
+      0x0E, // col 0 (00001110)
+      0x11, // col 1 (00010001)
+      0x11, // col 2 (00010001)
+      0x1F, // col 3 (00011111)
+      0x11, // col 4 (00010001)
+      0x11, // col 5 (00010001)
+      0x11, // col 6 (00010001)
+      0x00  // col 7
   };
   void updateLEDMatrix(int index) {
 	    HAL_GPIO_WritePin(ENM0_GPIO_Port, ENM0_Pin, SET);
@@ -203,19 +203,11 @@ static void MX_TIM2_Init(void);
 	    HAL_GPIO_WritePin(ENM6_GPIO_Port, ENM6_Pin, SET);
 	    HAL_GPIO_WritePin(ENM7_GPIO_Port, ENM7_Pin, SET);
 
-//	   uint8_t data = matrix_buffer[index];
-//	   for (int row = 0; row < 8; row++) {
-//	       if (data & (1 << row))
-//	           HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_SET);
-//	       else
-//	           HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_RESET);
-//	   }
-
 	    uint8_t data = matrix_buffer[index];
 
 	    for (int row = 0; row < 8; row++) {
-	        if (data & (1 << (7-row)))   // đảo bit cho đúng chiều
-	            HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_RESET); // active low row
+	        if (data & (1 << (7-row)))
+	            HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_RESET);
 	        else
 	            HAL_GPIO_WritePin(GPIOB, (1 << (8 + row)), GPIO_PIN_SET);
 	    }
@@ -250,7 +242,7 @@ static void MX_TIM2_Init(void);
 	  }
   }
 
-  void shiftRight(uint8_t newCol) {
+  void shiftDown(uint8_t newCol) {
       for (int i = MAX_LED_MATRIX - 1; i > 0; i--) {
           matrix_buffer[i] = matrix_buffer[i-1];
       }
@@ -318,6 +310,7 @@ int main(void)
   setTimer1(100);
   setTimer2(25);
   setTimer3(25);
+  int state = 0;
   while (1)
   {
 //	  if(timer3_flag == 1) {
@@ -353,14 +346,27 @@ int main(void)
           update7SEG(index_led);
 		  index_led++;
 		  if (index_led > MAX_LED - 1) index_led = 0;
-	  }
-
-	  if (timer3_flag == 1){
-	      setTimer3(25); // quét 1 cột mỗi 25ms
+		  //timer3
 	      updateLEDMatrix(index_led_matrix);
 	      index_led_matrix++;
 	      if (index_led_matrix >= MAX_LED_MATRIX) index_led_matrix = 0;
 	  }
+
+//	  if (timer3_flag == 1){
+//	      setTimer3(25); // quét 1 cột mỗi 25ms
+////	      updateLEDMatrix(index_led_matrix);
+////	      index_led_matrix++;
+////	      if (index_led_matrix >= MAX_LED_MATRIX) index_led_matrix = 0;
+//	  }
+	    if (state == 0 && timer2_flag == 1) {
+	        state = 1;
+	        setTimer3(200);  //bd dich
+	    }
+
+	    if (state == 1 && timer3_flag == 1) {
+	        shiftDown(0x00);
+	        setTimer3(200);
+	    }
 
     /* USER CODE END WHILE */
 
